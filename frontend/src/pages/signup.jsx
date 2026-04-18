@@ -1,64 +1,77 @@
-import React, { useState } from "react"
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import API from "../services/api";
 
 const Signup = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const handleSignup = async (e) => {
+    e.preventDefault();
 
-  const handleSignup = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          name,
-          email,
-          password
-        })
-      })
+      await API.post("/auth/signup", {
+        name,
+        email,
+        password,
+      });
 
-      const data = await res.json()
-      console.log(data)
-
+      alert("Account Created Successfully");
+      navigate("/");
     } catch (error) {
-      console.log("Error:", error)
+      alert("Signup Failed");
+      console.log(error);
     }
-  }
+  };
 
   return (
-    <div>
-      <h2>Signup</h2>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-purple-500 to-pink-500">
+      <div className="bg-white p-8 rounded-xl shadow-xl w-96">
+        <h2 className="text-3xl font-bold text-center mb-6 text-purple-600">
+          Signup
+        </h2>
 
-      <input
-        type="text"
-        placeholder="Enter name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <br /><br />
+        <form onSubmit={handleSignup} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Enter Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full border p-3 rounded-lg"
+          />
 
-      <input
-        type="email"
-        placeholder="Enter email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <br /><br />
+          <input
+            type="email"
+            placeholder="Enter Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full border p-3 rounded-lg"
+          />
 
-      <input
-        type="password"
-        placeholder="Enter password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <br /><br />
+          <input
+            type="password"
+            placeholder="Enter Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full border p-3 rounded-lg"
+          />
 
-      <button onClick={handleSignup}>Signup</button>
+          <button className="w-full bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-lg">
+            Signup
+          </button>
+        </form>
+
+        <p className="text-center mt-4">
+          Already have an account?{" "}
+          <Link to="/" className="text-purple-600 font-bold">
+            Login
+          </Link>
+        </p>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Signup
+export default Signup;
